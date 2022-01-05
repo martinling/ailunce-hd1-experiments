@@ -195,7 +195,7 @@ check_uart:
 	// Read UART status and loop until ready for TX
 	ldrb r1, [uart_base, #UART_S1]		// r1 = *(uart_base + UART_S1)
 	lsr r1, #8				// r1 >>= 8, carry = r1[8]
-	bcc check_uart
+	bcc check_uart				// if !carry: goto check_uart
 
 	// Write to UART
 	strb r0, [uart_base, #UART_D]		// *(uart_base + UART_D) = r0
