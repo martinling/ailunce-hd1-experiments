@@ -197,7 +197,7 @@ byte_start:
 
 check_uart:
 	// Read UART status and loop until ready for TX
-	ldr r1, [uart_base, #UART_S1]		// r1 = *(uart_base + UART_S1)
+	ldrb r1, [uart_base, #UART_S1]		// r1 = *(uart_base + UART_S1)
 	and r1, uart_empty			// r1 &= uart_empty
 	beq check_uart				// if r1 == 0: goto check_uart
 
