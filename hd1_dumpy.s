@@ -55,8 +55,8 @@ This file is placed into the public domain.
 
 // UART registers
 .equ UART_BASE,		(0x4006A000 + (0x1000 * UART_NUM))
-.equ UART_BDL,		0x00
-.equ UART_BDH,		0x01
+.equ UART_BDH,		0x00
+.equ UART_BDL,		0x01
 .equ UART_C1,		0x02
 .equ UART_C2,		0x03
 .equ UART_S1,		0x04
