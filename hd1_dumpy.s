@@ -114,7 +114,6 @@ led_bit .req r6
 uart_base .req r5
 flash_ptr .req r4
 flash_end .req r3
-uart_empty .req r2
 
 // Entry point (offset should now be 0x400).
 .thumb_func
@@ -172,9 +171,6 @@ entry_point:
 	// Load flash end address.
 	ldr flash_end, =FLASH_END		// flash_end = FLASH_END
 
-	// Load mask used to check UART TX empty bit.
-	ldr uart_empty, =UART_TX_EMPTY_BIT	// uart_empty = UART_TX_EMPTY_BIT
-
 dump_start:
 	// Set LED off.
 	str led_bit, [led_base, #GPIO_PCOR]	// *(led_base + GPIO_PCOR) = led_bit
@@ -198,8 +194,8 @@ byte_start:
 check_uart:
 	// Read UART status and loop until ready for TX
 	ldrb r1, [uart_base, #UART_S1]		// r1 = *(uart_base + UART_S1)
-	and r1, uart_empty			// r1 &= uart_empty
-	beq check_uart				// if r1 == 0: goto check_uart
+	lsr r1, #8				// r1 >>= 8, carry = r1[8]
+	bcc check_uart
 
 	// Write to UART
 	strb r0, [uart_base, #UART_D]		// *(uart_base + UART_D) = r0
