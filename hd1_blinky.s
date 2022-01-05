@@ -90,7 +90,7 @@ loop:
 	ldr r1, =DELAY_COUNT	// r1 = DELAY_COUNT
 delay:
 	sub r1, #1		// r1 -= 1
-	bmi delay		// if r1 < 0: goto delay
+	bne delay		// if r1 != 0: goto delay
 
 	// Toggle LED
 	str r2, [r0]		// *r0 = r2
