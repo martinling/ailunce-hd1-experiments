@@ -1,5 +1,5 @@
 from serial import Serial
-from zlib import crc32
+from crc32 import crc32
 import sys
 
 portname, filename = sys.argv[1:]
