@@ -504,7 +504,7 @@ byte_start:
 
 update_crc_and_send:
 	// Update CRC with byte in r0, then fall through to uart_write.
-	utxb r1, crc				// r1 = crc & 0xFF
+	uxtb r1, crc				// r1 = crc & 0xFF
 	eor r1, r0				// r1 ^= r0
 	ldr r2, =crc32_table			// r2 = crc32_table
 	ldr r1, [r2, r1]			// r1 = r2[r1]
