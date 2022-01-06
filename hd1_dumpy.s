@@ -483,7 +483,7 @@ byte_start:
 
 	// If not at end of 1K block, handle next byte.
 	lsl r0, flash_ptr, #23			// r0 = flash_ptr << 23
-	bpl byte_start				// if r0 >= 0: goto byte_start
+	bne byte_start				// if r0 != 0: goto byte_start
 
 	// Otherwise, send CRC.
 	lsr r0, crc, #0				// r0 = crc >> 0
