@@ -482,7 +482,7 @@ byte_start:
 	add flash_ptr, #1			// flash_ptr += 1
 
 	// If not at end of 1K block, handle next byte.
-	lsl r0, flash_ptr, #23			// r0 = flash_ptr << 23
+	lsl r0, flash_ptr, #22			// r0 = flash_ptr << 22
 	bne byte_start				// if r0 != 0: goto byte_start
 
 	// Otherwise, send CRC.
