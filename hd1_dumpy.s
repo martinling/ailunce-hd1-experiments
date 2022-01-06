@@ -510,6 +510,7 @@ update_crc_and_send:
 	uxtb r1, crc				// r1 = crc & 0xFF
 	eor r1, r0				// r1 ^= r0
 	ldr r2, =CRC32_TABLE_ADDR		// r2 = CRC32_TABLE_ADDR
+	lsl r1, #2				// r1 << 2
 	ldr r1, [r2, r1]			// r1 = r2[r1]
 	lsr r2, crc, #8				// r2 = crc >> 8
 	eor r1, r2				// r1 ^= r2
