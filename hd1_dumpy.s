@@ -511,7 +511,7 @@ update_crc_and_send:
 	ldr r1, [r2, r1]			// r1 = r2[r1]
 	lsr r2, crc, #8				// r2 = crc >> 8
 	eor r1, r2				// r1 ^= r2
-	mvn r1, crc				// crc = ~r1
+	mvn crc, r1				// crc = ~r1
 
 uart_write:
 	// Write byte in r0 to UART.
