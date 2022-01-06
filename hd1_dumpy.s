@@ -504,7 +504,8 @@ byte_start:
 	b block_start				// goto block_start
 
 update_crc_and_send:
-	// Update CRC with byte in r0, then fall through to uart_write.
+	// Update CRC with byte in bottom of r0, then fall through to uart_write.
+	uxtb r0, r0				// r0 &= 0xFF
 	uxtb r1, crc				// r1 = crc & 0xFF
 	eor r1, r0				// r1 ^= r0
 	ldr r2, =CRC32_TABLE_ADDR		// r2 = CRC32_TABLE_ADDR
