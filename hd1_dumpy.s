@@ -532,7 +532,7 @@ check_complete:
 	lsr r1, #7				// r1 >>= 7, carry = r1[6]
 	bcc check_complete			// if !carry: goto check_complete
 
-	b lr					// return
+	bx lr					// return
 
 constants:
 	// Assembler will put literal pool here.
