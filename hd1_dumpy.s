@@ -486,6 +486,7 @@ byte_start:
 	bne byte_start				// if r0 != 0: goto byte_start
 
 	// Otherwise, send CRC.
+	mvn crc, crc				// crc = ~crc
 	lsr r0, crc, #0				// r0 = crc >> 0
 	bl uart_write				// uart_write(r0)
 	lsr r0, crc, #8				// r0 = crc >> 8
@@ -512,7 +513,7 @@ update_crc_and_send:
 	ldr r1, [r2, r1]			// r1 = r2[r1]
 	lsr r2, crc, #8				// r2 = crc >> 8
 	eor r1, r2				// r1 ^= r2
-	mvn crc, r1				// crc = ~r1
+	mov crc, r1				// crc = r1
 
 uart_write:
 	// Write byte in r0 to UART.
