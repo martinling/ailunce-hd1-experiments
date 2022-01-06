@@ -46,6 +46,7 @@ while received_blocks < total_blocks:
 
     output.seek(flash_addr)
     output.write(data)
+    received_blocks += 1
 
 print("All blocks received")
 output.close()
