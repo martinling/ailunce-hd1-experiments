@@ -96,11 +96,12 @@ This file is placed into the public domain.
 .equ VECTOR_TABLE_SIZE,	(VECTOR_COUNT * 4)
 .equ CRC32_TABLE_SIZE,	0x100 * 4
 
-// Calculate entry point:
-// - Image is placed at load address
-// - Code begins after vector table & CRC table
-// - Add 1 to set LSB to select Thumb mode
-.equ ENTRY_POINT,	(LOAD_ADDRESS + VECTOR_TABLE_SIZE + CRC32_TABLE_SIZE + 1)
+// Calculate required addresses.
+
+// Vector table is placed at load address, followed by CRC32 table.
+.equ CRC32_TABLE_ADDR,	(LOAD_ADDRESS + VECTOR_TABLE_SIZE)
+// Entry point is after CRC32 table, add 1 to set LSB to select thumb mode.
+.equ ENTRY_POINT,	(CRC32_TABLE_ADDR + CRC32_TABLE_SIZE + 1)
 
 // Vector table
 vectors:
@@ -506,7 +507,7 @@ update_crc_and_send:
 	// Update CRC with byte in r0, then fall through to uart_write.
 	uxtb r1, crc				// r1 = crc & 0xFF
 	eor r1, r0				// r1 ^= r0
-	ldr r2, =crc32_table			// r2 = crc32_table
+	ldr r2, =CRC32_TABLE_ADDR		// r2 = CRC32_TABLE_ADDR
 	ldr r1, [r2, r1]			// r1 = r2[r1]
 	lsr r2, crc, #8				// r2 = crc >>= 8
 	eor r1, r2				// r1 ^= r2
