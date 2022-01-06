@@ -91,14 +91,16 @@ This file is placed into the public domain.
 .equ STACK_INITIAL,	0x2000FEF0
 
 // There are 256 entries in the vector table (1024 bytes)
+// and the same in the CRC32 table.
 .equ VECTOR_COUNT,	0x100
-.equ TABLE_SIZE,	(VECTOR_COUNT * 4)
+.equ VECTOR_TABLE_SIZE,	(VECTOR_COUNT * 4)
+.equ CRC32_TABLE_SIZE,	0x100 * 4
 
 // Calculate entry point:
 // - Image is placed at load address
-// - Code begins after vector table
+// - Code begins after vector table & CRC table
 // - Add 1 to set LSB to select Thumb mode
-.equ ENTRY_POINT,	(LOAD_ADDRESS + TABLE_SIZE + 1)
+.equ ENTRY_POINT,	(LOAD_ADDRESS + VECTOR_TABLE_SIZE + CRC32_TABLE_SIZE + 1)
 
 // Vector table
 vectors:
@@ -109,14 +111,273 @@ vectors:
 	.word ENTRY_POINT
 	.endr
 
+// CRC32 table
+crc32_table:
+	.word 0x00000000
+	.word 0x77073096
+	.word 0xEE0E612C
+	.word 0x990951BA
+	.word 0x076DC419
+	.word 0x706AF48F
+	.word 0xE963A535
+	.word 0x9E6495A3
+	.word 0x0EDB8832
+	.word 0x79DCB8A4
+	.word 0xE0D5E91E
+	.word 0x97D2D988
+	.word 0x09B64C2B
+	.word 0x7EB17CBD
+	.word 0xE7B82D07
+	.word 0x90BF1D91
+	.word 0x1DB71064
+	.word 0x6AB020F2
+	.word 0xF3B97148
+	.word 0x84BE41DE
+	.word 0x1ADAD47D
+	.word 0x6DDDE4EB
+	.word 0xF4D4B551
+	.word 0x83D385C7
+	.word 0x136C9856
+	.word 0x646BA8C0
+	.word 0xFD62F97A
+	.word 0x8A65C9EC
+	.word 0x14015C4F
+	.word 0x63066CD9
+	.word 0xFA0F3D63
+	.word 0x8D080DF5
+	.word 0x3B6E20C8
+	.word 0x4C69105E
+	.word 0xD56041E4
+	.word 0xA2677172
+	.word 0x3C03E4D1
+	.word 0x4B04D447
+	.word 0xD20D85FD
+	.word 0xA50AB56B
+	.word 0x35B5A8FA
+	.word 0x42B2986C
+	.word 0xDBBBC9D6
+	.word 0xACBCF940
+	.word 0x32D86CE3
+	.word 0x45DF5C75
+	.word 0xDCD60DCF
+	.word 0xABD13D59
+	.word 0x26D930AC
+	.word 0x51DE003A
+	.word 0xC8D75180
+	.word 0xBFD06116
+	.word 0x21B4F4B5
+	.word 0x56B3C423
+	.word 0xCFBA9599
+	.word 0xB8BDA50F
+	.word 0x2802B89E
+	.word 0x5F058808
+	.word 0xC60CD9B2
+	.word 0xB10BE924
+	.word 0x2F6F7C87
+	.word 0x58684C11
+	.word 0xC1611DAB
+	.word 0xB6662D3D
+	.word 0x76DC4190
+	.word 0x01DB7106
+	.word 0x98D220BC
+	.word 0xEFD5102A
+	.word 0x71B18589
+	.word 0x06B6B51F
+	.word 0x9FBFE4A5
+	.word 0xE8B8D433
+	.word 0x7807C9A2
+	.word 0x0F00F934
+	.word 0x9609A88E
+	.word 0xE10E9818
+	.word 0x7F6A0DBB
+	.word 0x086D3D2D
+	.word 0x91646C97
+	.word 0xE6635C01
+	.word 0x6B6B51F4
+	.word 0x1C6C6162
+	.word 0x856530D8
+	.word 0xF262004E
+	.word 0x6C0695ED
+	.word 0x1B01A57B
+	.word 0x8208F4C1
+	.word 0xF50FC457
+	.word 0x65B0D9C6
+	.word 0x12B7E950
+	.word 0x8BBEB8EA
+	.word 0xFCB9887C
+	.word 0x62DD1DDF
+	.word 0x15DA2D49
+	.word 0x8CD37CF3
+	.word 0xFBD44C65
+	.word 0x4DB26158
+	.word 0x3AB551CE
+	.word 0xA3BC0074
+	.word 0xD4BB30E2
+	.word 0x4ADFA541
+	.word 0x3DD895D7
+	.word 0xA4D1C46D
+	.word 0xD3D6F4FB
+	.word 0x4369E96A
+	.word 0x346ED9FC
+	.word 0xAD678846
+	.word 0xDA60B8D0
+	.word 0x44042D73
+	.word 0x33031DE5
+	.word 0xAA0A4C5F
+	.word 0xDD0D7CC9
+	.word 0x5005713C
+	.word 0x270241AA
+	.word 0xBE0B1010
+	.word 0xC90C2086
+	.word 0x5768B525
+	.word 0x206F85B3
+	.word 0xB966D409
+	.word 0xCE61E49F
+	.word 0x5EDEF90E
+	.word 0x29D9C998
+	.word 0xB0D09822
+	.word 0xC7D7A8B4
+	.word 0x59B33D17
+	.word 0x2EB40D81
+	.word 0xB7BD5C3B
+	.word 0xC0BA6CAD
+	.word 0xEDB88320
+	.word 0x9ABFB3B6
+	.word 0x03B6E20C
+	.word 0x74B1D29A
+	.word 0xEAD54739
+	.word 0x9DD277AF
+	.word 0x04DB2615
+	.word 0x73DC1683
+	.word 0xE3630B12
+	.word 0x94643B84
+	.word 0x0D6D6A3E
+	.word 0x7A6A5AA8
+	.word 0xE40ECF0B
+	.word 0x9309FF9D
+	.word 0x0A00AE27
+	.word 0x7D079EB1
+	.word 0xF00F9344
+	.word 0x8708A3D2
+	.word 0x1E01F268
+	.word 0x6906C2FE
+	.word 0xF762575D
+	.word 0x806567CB
+	.word 0x196C3671
+	.word 0x6E6B06E7
+	.word 0xFED41B76
+	.word 0x89D32BE0
+	.word 0x10DA7A5A
+	.word 0x67DD4ACC
+	.word 0xF9B9DF6F
+	.word 0x8EBEEFF9
+	.word 0x17B7BE43
+	.word 0x60B08ED5
+	.word 0xD6D6A3E8
+	.word 0xA1D1937E
+	.word 0x38D8C2C4
+	.word 0x4FDFF252
+	.word 0xD1BB67F1
+	.word 0xA6BC5767
+	.word 0x3FB506DD
+	.word 0x48B2364B
+	.word 0xD80D2BDA
+	.word 0xAF0A1B4C
+	.word 0x36034AF6
+	.word 0x41047A60
+	.word 0xDF60EFC3
+	.word 0xA867DF55
+	.word 0x316E8EEF
+	.word 0x4669BE79
+	.word 0xCB61B38C
+	.word 0xBC66831A
+	.word 0x256FD2A0
+	.word 0x5268E236
+	.word 0xCC0C7795
+	.word 0xBB0B4703
+	.word 0x220216B9
+	.word 0x5505262F
+	.word 0xC5BA3BBE
+	.word 0xB2BD0B28
+	.word 0x2BB45A92
+	.word 0x5CB36A04
+	.word 0xC2D7FFA7
+	.word 0xB5D0CF31
+	.word 0x2CD99E8B
+	.word 0x5BDEAE1D
+	.word 0x9B64C2B0
+	.word 0xEC63F226
+	.word 0x756AA39C
+	.word 0x026D930A
+	.word 0x9C0906A9
+	.word 0xEB0E363F
+	.word 0x72076785
+	.word 0x05005713
+	.word 0x95BF4A82
+	.word 0xE2B87A14
+	.word 0x7BB12BAE
+	.word 0x0CB61B38
+	.word 0x92D28E9B
+	.word 0xE5D5BE0D
+	.word 0x7CDCEFB7
+	.word 0x0BDBDF21
+	.word 0x86D3D2D4
+	.word 0xF1D4E242
+	.word 0x68DDB3F8
+	.word 0x1FDA836E
+	.word 0x81BE16CD
+	.word 0xF6B9265B
+	.word 0x6FB077E1
+	.word 0x18B74777
+	.word 0x88085AE6
+	.word 0xFF0F6A70
+	.word 0x66063BCA
+	.word 0x11010B5C
+	.word 0x8F659EFF
+	.word 0xF862AE69
+	.word 0x616BFFD3
+	.word 0x166CCF45
+	.word 0xA00AE278
+	.word 0xD70DD2EE
+	.word 0x4E048354
+	.word 0x3903B3C2
+	.word 0xA7672661
+	.word 0xD06016F7
+	.word 0x4969474D
+	.word 0x3E6E77DB
+	.word 0xAED16A4A
+	.word 0xD9D65ADC
+	.word 0x40DF0B66
+	.word 0x37D83BF0
+	.word 0xA9BCAE53
+	.word 0xDEBB9EC5
+	.word 0x47B2CF7F
+	.word 0x30B5FFE9
+	.word 0xBDBDF21C
+	.word 0xCABAC28A
+	.word 0x53B39330
+	.word 0x24B4A3A6
+	.word 0xBAD03605
+	.word 0xCDD70693
+	.word 0x54DE5729
+	.word 0x23D967BF
+	.word 0xB3667A2E
+	.word 0xC4614AB8
+	.word 0x5D681B02
+	.word 0x2A6F2B94
+	.word 0xB40BBE37
+	.word 0xC30C8EA1
+	.word 0x5A05DF1B
+	.word 0x2D02EF8D
+
 // Name some registers.
 led_base .req r7
 led_bit .req r6
 uart_base .req r5
 flash_ptr .req r4
-flash_end .req r3
+crc .req r3
 
-// Entry point (offset should now be 0x400).
+// Entry point (offset should now be 0x800).
 .thumb_func
 entry_point:
 	// Enable clock to LED port.
@@ -169,9 +430,6 @@ entry_point:
 	ldr r0, =UART_C4_VAL			// r0 = UART_C4_VAL
 	strb r0, [uart_base, #UART_C4]		// *(uart_base + UART_C4) = r0
 
-	// Load flash end address.
-	ldr flash_end, =FLASH_END		// flash_end = FLASH_END
-
 dump_start:
 	// Set LED off.
 	str led_bit, [led_base, #GPIO_PCOR]	// *(led_base + GPIO_PCOR) = led_bit
@@ -188,9 +446,73 @@ delay:
 	// Set initial flash address
 	mov flash_ptr, #0			// flash_ptr = 0
 
+block_start:
+	// Initialise CRC
+	ldr crc, =0xFFFFFFFF			// crc = 0xFFFFFFFF
+
+	// Write sync word to UART, and include in CRC.
+	mov r0, #'D				// r0 = 'D'
+	bl update_crc_and_send			// update_crc_and_send(r0)
+	mov r0, #'U				// r0 = 'U'
+	bl update_crc_and_send			// update_crc_and_send(r0)
+	mov r0, #'M				// r0 = 'M'
+	bl update_crc_and_send			// update_crc_and_send(r0)
+	mov r0, #'P				// r0 = 'P'
+	bl update_crc_and_send			// update_crc_and_send(r0)
+
+	// Write flash address to UART, and include in CRC.
+	lsr r0, flash_ptr, #0			// r0 = flash_ptr >> 0
+	bl update_crc_and_send			// update_crc_and_send(r0)
+	lsr r0, flash_ptr, #8			// r0 = flash_ptr >> 8
+	bl update_crc_and_send			// update_crc_and_send(r0)
+	lsr r0, flash_ptr, #16			// r0 = flash_ptr >> 16
+	bl update_crc_and_send			// update_crc_and_send(r0)
+	lsr r0, flash_ptr, #24			// r0 = flash_ptr >> 24
+	bl update_crc_and_send			// update_crc_and_send(r0)
+
 byte_start:
 	// Read next byte from flash.
 	ldrb r0, [flash_ptr]			// r0 = *flash_ptr
+
+	// Write byte to UART, and include in CRC.
+	bl update_crc_and_send			// update_crc_and_send(r0)
+
+	// Increment pointer
+	add flash_ptr, #1			// flash_ptr += 1
+
+	// Stop if at end of flash.
+	ldr r0, =FLASH_END			// r0 = FLASH_END
+	cmp flash_ptr, r0			// if flash_ptr == r0:
+	beq dump_start				//	goto dump_start
+
+	// If not at end of 1K block, handle next byte.
+	lsl r0, flash_ptr, #23			// r0 = flash_ptr << 23
+	bpl byte_start				// if r0 >= 0: goto byte_start
+
+	// Otherwise, send CRC and start next block.
+	lsr r0, crc, #0				// r0 = crc >> 0
+	bl uart_write				// uart_write(r0)
+	lsr r0, crc, #8				// r0 = crc >> 8
+	bl uart_write				// uart_write(r0)
+	lsr r0, crc, #16			// r0 = crc >> 16
+	bl uart_write				// uart_write(r0)
+	lsr r0, crc, #24			// r0 = crc >> 24
+	bl uart_write				// uart_write(r0)
+
+	b block_start				// goto block_start
+
+update_crc_and_send:
+	// Update CRC with byte in r0, then fall through to uart_write.
+	utxb r1, crc				// r1 = crc & 0xFF
+	eor r1, r0				// r1 ^= r0
+	ldr r2, =crc32_table			// r2 = crc32_table
+	ldr r1, [r2, r1]			// r1 = r2[r1]
+	lsr r2, crc, #8				// r2 = crc >>= 8
+	eor r1, r2				// r1 ^= r2
+	mvn r1, crc				// crc = ~r1
+
+uart_write:
+	// Write byte in r0 to UART.
 
 check_ready:
 	// Read UART status and loop until ready for TX
@@ -207,15 +529,7 @@ check_complete:
 	lsr r1, #7				// r1 >>= 7, carry = r1[6]
 	bcc check_complete			// if !carry: goto check_complete
 
-	// Increment pointer
-	add flash_ptr, #1			// flash_ptr += 1
-
-	// Stop if at end of flash.
-	cmp flash_ptr, flash_end		// if flash_ptr == flash_end:
-	beq dump_start				//	goto dump_start
-
-	// Otherwise repeat for next byte.
-	b byte_start				// goto byte_start
+	b lr					// return
 
 constants:
 	// Assembler will put literal pool here.
