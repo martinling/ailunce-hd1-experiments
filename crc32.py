@@ -2,7 +2,7 @@ def crc32(data):
     crc = 0xFFFFFFFF
     for byte in data:
         crc = crc32_table[(crc & 0xFF) ^ byte] ^ (crc >> 8)
-    return ~crc
+    return ~crc & 0xFFFFFFFF
 
 crc32_table = [
  0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA,
