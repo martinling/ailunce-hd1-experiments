@@ -20,7 +20,7 @@ while received_blocks < total_blocks:
     # Look for sync word
     last_4_bytes = b'xxxx'
     while last_4_bytes != sync_word:
-        last_4_bytes = last_4_bytes[0:3] + port.read(1)
+        last_4_bytes = last_4_bytes[1:4] + port.read(1)
 
     # Read flash address
     flash_addr_bytes = port.read(4)
