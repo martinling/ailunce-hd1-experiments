@@ -480,16 +480,11 @@ byte_start:
 	// Increment pointer
 	add flash_ptr, #1			// flash_ptr += 1
 
-	// Stop if at end of flash.
-	ldr r0, =FLASH_END			// r0 = FLASH_END
-	cmp flash_ptr, r0			// if flash_ptr == r0:
-	beq dump_start				//	goto dump_start
-
 	// If not at end of 1K block, handle next byte.
 	lsl r0, flash_ptr, #23			// r0 = flash_ptr << 23
 	bpl byte_start				// if r0 >= 0: goto byte_start
 
-	// Otherwise, send CRC and start next block.
+	// Otherwise, send CRC.
 	lsr r0, crc, #0				// r0 = crc >> 0
 	bl uart_write				// uart_write(r0)
 	lsr r0, crc, #8				// r0 = crc >> 8
@@ -499,6 +494,12 @@ byte_start:
 	lsr r0, crc, #24			// r0 = crc >> 24
 	bl uart_write				// uart_write(r0)
 
+	// Stop if at end of flash.
+	ldr r0, =FLASH_END			// r0 = FLASH_END
+	cmp flash_ptr, r0			// if flash_ptr == r0:
+	beq dump_start				//	goto dump_start
+
+	// Otherwise, start next block.
 	b block_start				// goto block_start
 
 update_crc_and_send:
