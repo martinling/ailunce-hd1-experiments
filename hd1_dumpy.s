@@ -192,14 +192,20 @@ byte_start:
 	// Read next byte from flash.
 	ldrb r0, [flash_ptr]			// r0 = *flash_ptr
 
-check_uart:
+check_ready:
 	// Read UART status and loop until ready for TX
 	ldrb r1, [uart_base, #UART_S1]		// r1 = *(uart_base + UART_S1)
-	lsr r1, #8				// r1 >>= 8, carry = r1[8]
-	bcc check_uart				// if !carry: goto check_uart
+	lsr r1, #8				// r1 >>= 8, carry = r1[7]
+	bcc check_ready				// if !carry: goto check_ready
 
 	// Write to UART
 	strb r0, [uart_base, #UART_D]		// *(uart_base + UART_D) = r0
+
+check_complete:
+	// Read UART status and loop until TX complete
+	ldrb r1, [uart_base, #UART_S1]		// r1 = *(uart_base + UART_S1)
+	lsr r1, #7				// r1 >>= 7, carry = r1[6]
+	bcc check_complete			// if !carry: goto check_complete
 
 	// Increment pointer
 	add flash_ptr, #1			// flash_ptr += 1
