@@ -41,12 +41,12 @@ while received_blocks < total_blocks:
         continue
 
     # Otherwise, add to output file
+    received_blocks += 1
     print("Block received for address %X, %d/%d blocks received"
         % (flash_addr, received_blocks, total_blocks))
 
     output.seek(flash_addr)
     output.write(data)
-    received_blocks += 1
 
 print("All blocks received")
 output.close()
