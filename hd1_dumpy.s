@@ -66,14 +66,14 @@ This file is placed into the public domain.
 .equ UART_C4,		0x0A
 
 // UART settings
-.equ UART_MODULE_CLOCK,	31450000 // Dunno why, empirically determined
+.equ UART_MODULE_CLOCK,	63336800 // Dunno why, empirically determined
 .equ BAUD_RATE,		115200
 .equ BAUD_CLOCK_FREQ,	(BAUD_RATE * 16)
 .equ BAUD_DIVISOR,	(UART_MODULE_CLOCK / BAUD_CLOCK_FREQ)
 // Fine tuning value is in units of 1/32, added to the integer divisor.
-// Ideal divisor is (31.45MHz / (16 * 115.2kHz)) = 17.0627
-// Closest we can get is 17 + 2/32 = 17.0625
-.equ BAUD_FINE_TUNE,	2
+// Ideal divisor is (63.3368MHz / (16 * 115.2kHz)) = 34.3624
+// Closest we can get is 34 + 12/32 = 34.375
+.equ BAUD_FINE_TUNE,	12
 .equ UART_BDH_VAL,	(BAUD_DIVISOR >> 8)
 .equ UART_BDL_VAL,	(BAUD_DIVISOR & 0xFF)
 .equ UART_C1_VAL,	0
